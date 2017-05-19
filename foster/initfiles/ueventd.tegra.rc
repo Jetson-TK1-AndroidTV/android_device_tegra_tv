@@ -100,6 +100,15 @@
 /dev/video0     0660    media   camera
 /dev/video1     0660    media   camera
 
+# rfkill node
+/sys/devices/platform/tegra-xhci/usb2/2-3/2-3:1.0/bluetooth/hci0/rfkill* state  0660 bluetooth net_bt_stack
+/sys/devices/platform/tegra-xhci/usb2/2-3/2-3:1.0/bluetooth/hci0/rfkill* type   0440 bluetooth net_bt_stack
+/sys/class/rfkill/rfkill2/type 0440 bluetooth net_bt_stack
+/sys/class/rfkill/rfkill2/state 0660 bluetooth net_bt_stack
+
+#Bluedroid uhid support
+/dev/uhid                                    0660 bluetooth net_bt_stack
+
 #Gamepad reset
 /sys/devices/platform/gamepad*	gamepad_reset	0220	system	system
 

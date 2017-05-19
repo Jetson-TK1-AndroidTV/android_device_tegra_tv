@@ -7,25 +7,28 @@
 #is strictly prohibited.
 
 on boot
-    # bluetooth
-    # change back to bluetooth from system
     chown bluetooth net_bt_stack /data/misc/bluetooth
+    chown bluetooth net_bt_stack /dev/uhid
+    chown bluetooth net_bt_stack /dev/uinput
 
-    # power up/down interface
-    chmod 0660 /sys/class/rfkill/rfkill0/state
-    chmod 0660 /sys/class/rfkill/rfkill0/type
-    chown bluetooth net_bt_stack /sys/class/rfkill/rfkill0/state
-    chown bluetooth net_bt_stack /sys/class/rfkill/rfkill0/type
+start bt_init
 
-    chown bluetooth net_bt_stack ro.bt.bdaddr_path
-    chown bluetooth net_bt_stack /system/etc/bluetooth
-    chown bluetooth net_bt_stack /mnt/factory/bluetooth/bt_mac.txt
+on property:init.svc.bluetoothd=running
+    start hci0_up
 
-# bluetooth mac address programming
-service bt_loader /system/bin/bt_loader.sh
+on property:init.svc.bluetoothd=stopped
+    start hci0_down
+
+service hci0_up /system/bin/logwrapper /system/xbin/hciconfig hci0 up
     class main
-    user root
-    group root
+    group bluetooth
+    disabled
+    oneshot
+
+service hci0_down /system/bin/logwrapper /system/xbin/hciconfig hci0 down
+    class main
+    group bluetooth
+    disabled
     oneshot
 
 on fs

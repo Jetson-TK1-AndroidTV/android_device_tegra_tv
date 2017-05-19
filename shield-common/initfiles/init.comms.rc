@@ -1,4 +1,4 @@
-#Copyright (c) 2011-2016 NVIDIA Corporation.  All Rights Reserved.
+#Copyright (c) 2011-2017 NVIDIA Corporation.  All Rights Reserved.
 #
 #NVIDIA Corporation and its licensors retain all intellectual property and
 #proprietary rights in and to this software and related documentation.  Any
@@ -7,26 +7,23 @@
 #is strictly prohibited.
 
 on boot
+    chown bluetooth net_bt_stack /data/misc/bluetooth
+    chown bluetooth net_bt_stack /dev/uhid
+    chown bluetooth net_bt_stack /dev/uinput
+
     # bluetooth
     # change back to bluetooth from system
     chown bluetooth net_bt_stack /data/misc/bluetooth
 
     # power up/down interface
-    chmod 0660 /sys/class/rfkill/rfkill0/state
-    chmod 0660 /sys/class/rfkill/rfkill0/type
-    chown bluetooth net_bt_stack /sys/class/rfkill/rfkill0/state
-    chown bluetooth net_bt_stack /sys/class/rfkill/rfkill0/type
+    chmod 0660 /sys/class/rfkill/rfkill2/state
+    chmod 0660 /sys/class/rfkill/rfkill2/type
+    chown bluetooth net_bt_stack /sys/class/rfkill/rfkill2/state
+    chown bluetooth net_bt_stack /sys/class/rfkill/rfkill2/type
 
     chown bluetooth net_bt_stack ro.bt.bdaddr_path
     chown bluetooth net_bt_stack /system/etc/bluetooth
     chown bluetooth net_bt_stack /mnt/factory/bluetooth/bt_mac.txt
-
-# bluetooth mac address programming
-service bt_loader /system/bin/bt_loader.sh
-    class main
-    user root
-    group root
-    oneshot
 
 on fs
     # Wifi support rx-filter
@@ -36,6 +33,9 @@ on fs
     write /proc/sys/net/core/rmem_max 1048576
 
 on post-fs-data
+    # To store BT paired info
+    mkdir /data/misc/hcid 0770 bluetooth net_bt_stack
+
     mkdir /data/misc/wifi 0771 wifi wifi
     mkdir /data/misc/wifi/sockets 0770 wifi wifi
 
@@ -121,6 +121,13 @@ service iprenew_p2p /system/bin/dhcpcd -n
     oneshot
 
 service iprenew_eth0 /system/bin/dhcpcd -n
+    class main
+    disabled
+    oneshot
+
+start btattach
+
+service btattach /system/bin/btattach
     class main
     disabled
     oneshot

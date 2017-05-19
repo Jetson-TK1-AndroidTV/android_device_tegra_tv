@@ -28,8 +28,11 @@ on init
     symlink /mnt/media_rw/satadrive /satadrive
     symlink /storage/satadrive /satadrive
 
-    chmod 600 /dev/rfkill
-    chown root root /dev/rfkill
+# for bluetooth nodes
+    chmod 0644 /dev/rfkill
+    chmod 0660 /dev/uhid
+    chown bluetooth net_bt_stack /dev/rfkill
+    chown bluetooth net_bt_stack /dev/uhid
 
 on fs
     # mount console ramooops
