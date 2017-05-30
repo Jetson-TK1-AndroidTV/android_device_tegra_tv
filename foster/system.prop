@@ -46,3 +46,16 @@ ro.device.chipset=NVIDIA Tegra K1 T124
 ro.device.cpu=Quad Core 2.2GHz
 ro.device.gpu=NVIDIA GK20A (Kepler)
 ro.build.version.ota=5.1(24.28.403.124)
+
+# VRR properties
+# SF will not activate VRR because ro.sf.vrr.enabled 0
+# read-once enable
+ro.sf.vrr.enabled = 0
+ro.sys.vrr.hdmi = 0
+# Default to persist.sys.sf.vrr 1 may be OTAed
+# once the feature is enabled
+# read-dynamic disable
+persist.sys.sf.vrr = 0
+
+persist.sys.vrr.refreshrate = 60
+persist.sys.vrr.apprate = 60

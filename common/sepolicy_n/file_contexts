@@ -299,9 +299,9 @@
 # wifi sysfs
 /sys/module/bcmdhd/parameters/firmware_path	u:object_r:sysfs_wifi:s0
 # Bluetooth rfkill interface for Platform data driver
-/sys/devices/platform/bluedroid_pm(.*)/rfkill/rfkill0/state	u:object_r:sysfs_bluetooth_writable:s0
+/sys/class/rfkill/rfkill2/state	u:object_r:sysfs_bluetooth_writable:s0
 # Bluetooth rfkill interface for DT enabled driver
-/sys/devices/platform/bluedroid_pm/rfkill/rfkill0/state		u:object_r:sysfs_bluetooth_writable:s0
+/sys/devices/platform/tegra-xhci/usb2/2-2/2-2:1.0/bluetooth/hci0/rfkill2/state		u:object_r:sysfs_bluetooth_writable:s0
 # Tegra i2c devices sysfs
 /sys/devices/platform/tegra.*i2c\.[0-9]+(/.*)?	u:object_r:sysfs_nvi2c:s0
 /sys/devices/platform/[0-9a-f]+\.i2c(/.*)?	u:object_r:sysfs_nvi2c:s0

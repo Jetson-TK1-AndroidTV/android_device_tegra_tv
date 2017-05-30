@@ -29,10 +29,10 @@ on init
     symlink /storage/satadrive /satadrive
 
 # for bluetooth nodes
-    chmod 0644 /dev/rfkill
+    chmod 0600 /dev/rfkill
     chmod 0660 /dev/uhid
-    chown bluetooth net_bt_stack /dev/rfkill
-    chown bluetooth net_bt_stack /dev/uhid
+    chown root root /dev/rfkill
+    chown system net_bt_stack /dev/uhid
 
 on fs
     # mount console ramooops
@@ -56,6 +56,15 @@ on fs
     write /sys/class/gpio/gpio234/direction high
 
 on post-fs-data
+# Set Foster as console mode
+    setprop persist.sys.display.resolution 1920x1080
+    setprop persist.tegra.hdmi.resolution Max_60Hz
+    setprop persist.tegra.composite.policy composite-yuv
+    setprop sys.wal.off external.db,iu.upload.db
+    setprop sys.wal.normal tz4,PGDatabase,launcher.db,playlog.db,music.db
+    write /sys/power/wake_lock foster-staywake
+
+
     mkdir /data/media 0770 media_rw media_rw
     chmod 755 /data
     chmod 755 /data/system
@@ -71,7 +80,7 @@ on post-fs-data
 
     # create directory for mediaserver EGL blob cache
     mkdir /data/misc/mediaserver 0770 media media
-
+    mkdir /data/provTest 0700 root drmrpc
     mkdir /data/anr 0773 root system
 
 # Set up HDCP

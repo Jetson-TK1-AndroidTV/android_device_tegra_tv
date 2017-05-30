@@ -7,19 +7,24 @@
 #is strictly prohibited.
 
 on boot
-    chown bluetooth net_bt_stack /data/misc/bluetooth
-    chown bluetooth net_bt_stack /dev/uhid
-    chown bluetooth net_bt_stack /dev/uinput
+    chown system net_bt_stack /dev/uhid
+    chown system net_bt_stack /dev/uinput
 
     # bluetooth
     # change back to bluetooth from system
     chown bluetooth net_bt_stack /data/misc/bluetooth
 
-    # power up/down interface
-    chmod 0660 /sys/class/rfkill/rfkill2/state
-    chmod 0660 /sys/class/rfkill/rfkill2/type
-    chown bluetooth net_bt_stack /sys/class/rfkill/rfkill2/state
-    chown bluetooth net_bt_stack /sys/class/rfkill/rfkill2/type
+    # power up/down BT BCM RFKILL interface
+    chmod 0660 /sys/class/rfkill/rfkill0/state
+    chmod 0660 /sys/class/rfkill/rfkill0/type
+    chown bluetooth net_bt_stack /sys/class/rfkill/rfkill0/state
+    chown bluetooth net_bt_stack /sys/class/rfkill/rfkill0/type
+
+    # power up/down virtual tty interface
+    chmod 0660 /sys/class/rfkill/rfkill3/state
+    chmod 0660 /sys/class/rfkill/rfkill3/type
+    chown bluetooth net_bt_stack /sys/class/rfkill/rfkill3/state
+    chown bluetooth net_bt_stack /sys/class/rfkill/rfkill3/type
 
     chown bluetooth net_bt_stack ro.bt.bdaddr_path
     chown bluetooth net_bt_stack /system/etc/bluetooth

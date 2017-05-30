@@ -299,6 +299,7 @@
 # wifi sysfs
 /sys/module/bcmdhd/parameters/firmware_path	u:object_r:sysfs_wifi:s0
 # Bluetooth rfkill interface for Platform data driver
+/sys/class/rfkill/rfkill0/state	u:object_r:sysfs_bluetooth_writable:s0
 /sys/devices/platform/bluedroid_pm(.*)/rfkill/rfkill0/state	u:object_r:sysfs_bluetooth_writable:s0
 # Bluetooth rfkill interface for DT enabled driver
 /sys/devices/platform/bluedroid_pm/rfkill/rfkill0/state		u:object_r:sysfs_bluetooth_writable:s0

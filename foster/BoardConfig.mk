@@ -47,8 +47,7 @@ TARGET_HAS_LEGACY_CAMERA_HAL1 := true
 # TARGET_KERNEL_CONFIG := tegra12_android_defconfig
 BOARD_KERNEL_CMDLINE := androidboot.hardware=tegra androidboot.selinux=permissive
 
-# FS
-TARGET_COPY_OUT_VENDOR := vendor
+# File System
 TARGET_USERIMAGES_USE_EXT4 := true
 BOARD_BOOTIMAGE_PARTITION_SIZE := 16777216
 BOARD_RECOVERYIMAGE_PARTITION_SIZE := 16777216
@@ -59,6 +58,7 @@ BOARD_VENDORIMAGE_FILE_SYSTEM_TYPE := ext4
 BOARD_CACHEIMAGE_PARTITION_SIZE := 805306368
 BOARD_CACHEIMAGE_FILE_SYSTEM_TYPE := ext4
 BOARD_FLASH_BLOCK_SIZE := 4096
+TARGET_COPY_OUT_VENDOR := vendor
 
 # PowerHAL
 TARGET_POWERHAL_VARIANT := tegra
@@ -66,16 +66,22 @@ TARGET_POWERHAL_VARIANT := tegra
 # Audio
 BOARD_USES_GENERIC_AUDIO := false
 BOARD_USES_ALSA_AUDIO := true
-BOARD_USES_TEGRA_HDMI := true
+#BOARD_USES_TEGRA_HDMI :=true
 
-ifeq ($(NV_ANDROID_FRAMEWORK_ENHANCEMENTS_AUDIO), TRUE)
-USE_CUSTOM_AUDIO_POLICY := 1
-else
-USE_CUSTOM_AUDIO_POLICY := 0
-endif
+#USE_CUSTOM_AUDIO_POLICY := 1
 
-# Bluetooth
-BOARD_HAVE_BLUETOOTH := false
+NV_BUILD_GL_SUPPORT := 1
+
+BOARD_VENDOR_HDCP_ENABLED ?= true
+BOARD_ENABLE_SECURE_HDCP ?= 1
+BOARD_VENDOR_HDCP_PATH ?= vendor/nvidia/tegra/tests-partner/hdcp
+
+BOARD_BLUETOOTH_BDROID_BUILDCFG_INCLUDE_DIR ?= device/nvidia/foster/bluetooth
+BOARD_HAVE_BLUETOOTH := true
+BOARD_HAVE_BLUETOOTH_HCI := true
+
+# powerhal
+BOARD_USES_POWERHAL := true
 
 # Graphics
 USE_OPENGL_RENDERER := true
@@ -91,16 +97,19 @@ MAX_EGL_CACHE_ENTRY_SIZE := 262144
 # Recovery
 TARGET_RECOVERY_FSTAB := device/nvidia/foster/initfiles/fstab.tegra
 
-# Wifi related defines
-BOARD_WLAN_DEVICE := pcie
-CONFIG_CTRL_IFACE := y
-WPA_SUPPLICANT_VERSION := VER_0_8_X
-BOARD_HOSTAPD_DRIVER := NL80211
+# Broadcom 4356 PCIe Wifi related defines
 BOARD_WPA_SUPPLICANT_DRIVER := NL80211
-BOARD_WPA_SUPPLICANT_PRIVATE_LIB := lib_driver_cmd_pcie
-BOARD_HOSTAPD_PRIVATE_LIB := lib_driver_cmd_pcie
-
-#BOARD_HARDWARE_CLASS := device/nvidia/shieldtablet/cmhw/
+WPA_SUPPLICANT_VERSION      := VER_0_8_X
+BOARD_WPA_SUPPLICANT_PRIVATE_LIB := lib_driver_cmd_bcmdhd
+BOARD_WLAN_DEVICE           := bcmdhd
+BOARD_HOSTAPD_DRIVER        := NL80211
+BOARD_HOSTAPD_PRIVATE_LIB   := lib_driver_cmd_bcmdhd
+WIFI_DRIVER_FW_PATH_STA     := "/system/vendor/firmware/fw_bcmdhd.bin"
+WIFI_DRIVER_FW_PATH_AP      := "/system/vendor/firmware/fw_bcmdhd.bin"
+WIFI_DRIVER_FW_PATH_P2P     := "/system/vendor/firmware/fw_bcmdhd.bin"
+WIFI_DRIVER_FW_PATH_PARAM   := "/sys/module/bcmdhd/parameters/firmware_path"
+WIFI_DRIVER_MODULE_ARG      := "iface_name=wlan0"
+WIFI_DRIVER_MODULE_NAME     := "bcmdhd"
 
 # sepolicy
 BOARD_SEPOLICY_DIRS += device/nvidia/foster/sepolicy/

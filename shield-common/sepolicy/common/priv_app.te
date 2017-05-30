@@ -29,3 +29,12 @@ r_dir_file(priv_app, sysfs_mmc_host)
 allow priv_app system_app_data_file:file r_file_perms;
 # Read /mnt/asec/<pkg-cid>/base.apk which is mounted from app on sdcard (asec)
 allow priv_app asec_apk_file:file r_file_perms;
+
+# Bluetooth HCI/PCI permissions
+allow priv_app device:dir read;
+allow priv_app sysfs_pci_device:dir search;
+allow priv_app system_app_data_file:dir getattr;
+allow priv_app device:dir open;
+allow priv_app sysfs_pci_device:file read;
+allow priv_app sysfs_pci_device:file open;
+

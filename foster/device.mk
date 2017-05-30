@@ -41,17 +41,19 @@ $(call inherit-product, frameworks/native/build/tablet-10in-xhdpi-2048-dalvik-he
 
 $(call inherit-product-if-exists, vendor/nvidia/shieldtablet/shieldtablet-vendor.mk)
 
-# PRODUCT_SYSTEM_PROPERTY_BLACKLIST := ro.product.name
+# Boot Animation
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/bootanimation.zip:system/media/bootanimation.zip
 
 PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/keylayouts/tegra-kbc.kl:system/usr/keylayout/tegra-kbc.kl \
-    $(LOCAL_PATH)/keylayouts/gpio-keys.kl:system/usr/keylayout/gpio-keys.kl \
     $(LOCAL_PATH)/keylayouts/AliTV_Remote_V1_Airmouse.kl:system/usr/keylayout/AliTV_Remote_V1_Airmouse.kl \
-    $(LOCAL_PATH)/keylayouts/AliTV_Remote_V1_Airmouse.idc:system/usr/idc/AliTV_Remote_V1_Airmouse.idc
+    $(LOCAL_PATH)/keylayouts/AliTV_Remote_V1_Airmouse.idc:system/usr/idc/AliTV_Remote_V1_Airmouse.idc \
+    $(LOCAL_PATH)/keylayouts/ADT-1_Remote.kl::system/usr/keylayout/ADT-1_Remote.kl
 
 # set default USB configuration
 PRODUCT_DEFAULT_PROPERTY_OVERRIDES += \
-    persist.sys.usb.config=mtp
+    persist.sys.usb.config=mtp \
+    persist.sys.tegra.refresh=59.940
 
 # TV Overlay
 DEVICE_PACKAGE_OVERLAYS += \
@@ -117,10 +119,6 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/comms/gpsconfig.xml:system/etc/gps/gpsconfig.xml \
     $(LOCAL_PATH)/comms/gps.conf:system/etc/gps.conf
 
-# Bluetooth
-PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/comms/bt_vendor.conf:system/etc/bluetooth/bt_vendor.conf
-
 # Camera
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/camera/nvcamera.conf:system/etc/nvcamera.conf \
@@ -142,22 +140,45 @@ PRODUCT_PACKAGES += \
     TV \
     LiveTv
 
-PRODUCT_PACKAGES += libhardware_legacy
-PRODUCT_PACKAGES += libwpa_client
-PRODUCT_PACKAGES += hostapd
-PRODUCT_PACKAGES += dhcpcd.conf
-PRODUCT_PACKAGES += wpa_supplicant
-PRODUCT_PACKAGES += wpa_supplicant.conf
+#enable Widevine drm
+PRODUCT_PROPERTY_OVERRIDES += drm.service.enabled=true
+PRODUCT_PACKAGES += \
+    liboemcrypto \
+    libdrmdecrypt
+
+PRODUCT_RUNTIMES := runtime_libart_default
+
+RODUCT_PACKAGES += \
+    libwpa_client \
+    hostapd \
+    wpa_supplicant \
+    wpa_supplicant.conf
+
+$(call inherit-product, hardware/broadcom/wlan/bcmdhd/config/config-bcm.mk)
 
 PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/wifi/wpa_supplicant_overlay.conf:system/etc/wifi/wpa_supplicant_overlay.conf
+    $(LOCAL_PATH)/firmware/fw_bcmdhd_56.bin:vendor/firmware/fw_bcmdhd.bin \
+    $(LOCAL_PATH)/firmware/nvram.txt:system/etc/nvram.txt
+
+# Bluetooth USB tools
+PRODUCT_PACKAGES += \
+    btattach \
+    hciattach \
+    hciconfig \
+    hcitool
+
+# Broadcom Patchram USB BT firmware
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/bt_vendor.conf:system/etc/bluetooth/bt_vendor.conf \
+    $(LOCAL_PATH)/firmware/BCM20702A0-0a5c-21e8.hcd:system/etc/firmware/brcm/BCM20702A0-0a5c-21e8.hcd \
+    $(LOCAL_PATH)/firmware/BCM2045A0-13d3-3488.hcd:system/etc/firmware/brcm/BCM2045A0-13d3-3488.hcd
 
 # Nvidia packages
 PRODUCT_PACKAGES += \
-    libstagefrighthw \
     hdmi_cec.tegra \
     vulkan.tegra \
     audio.primary.tegra \
+    libaudiopolicymanager \
     audio.a2dp.default \
     audio.usb.default \
     audio.nvwc.tegra \
@@ -171,11 +192,23 @@ PRODUCT_PACKAGES += \
     charger \
     charger_res_images
 
+#USE_CUSTOM_AUDIO_POLICY := 1
+
 # Radio Interface
 PRODUCT_PACKAGES += rild
 
+# HDCP SRM Support
+PRODUCT_PACKAGES += \
+        hdcp1x.srm \
+        hdcp2x.srm \
+        hdcp2xtest.srm
+
 # Power
 PRODUCT_PACKAGES += power.tegra
+
+# OPENGL AEP permission file
+PRODUCT_COPY_FILES += \
+    frameworks/native/data/etc/android.hardware.opengles.aep.xml:system/etc/permissions/android.hardware.opengles.aep.xml
 
 # Compatibility
 PRODUCT_PACKAGES += libshim_icu55 \
@@ -184,7 +217,6 @@ PRODUCT_PACKAGES += libshim_icu55 \
 # Leanback Gapps
 $(call inherit-product, vendor/google/jetson/jetson-vendor.mk)
 $(call inherit-product-if-exists, vendor/google/atv/atv-vendor.mk)
-$(call inherit-product, $(SRC_TARGET_DIR)/product/generic_no_telephony.mk)
 
 # Wireless Controller
 #$(call inherit-product-if-exists, vendor/nvidia/shield_common/blake-blobs.mk)

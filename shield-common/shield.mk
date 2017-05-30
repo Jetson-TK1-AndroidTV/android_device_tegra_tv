@@ -82,7 +82,7 @@ PRODUCT_PACKAGES += \
     tinyplay \
     xaplay
 
-USE_CUSTOM_AUDIO_POLICY := 1
+#USE_CUSTOM_AUDIO_POLICY := 1
 
 ifneq ($(TARGET_TEGRA_VERSION),t114)
 	PRODUCT_PACKAGES += libtinycompress
